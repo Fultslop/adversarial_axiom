@@ -7,8 +7,6 @@ const config: Config = {
   testMatch: ["**/*.test.ts", "**/*.spec.ts"],
   collectCoverageFrom: ["src/**/*.ts", "!src/**/*.d.ts"],
   moduleNameMapper: {
-    // The ^ ensures we match from the start of the string
-    // The (.*)$ captures the rest of the path to use in $1
     '^@src/(.*)$': '<rootDir>/src/$1',
   },
   coverageThreshold: {
@@ -19,14 +17,6 @@ const config: Config = {
       statements: 80,
     },
   },
-};
-
-module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  moduleNameMapper: {
-    '^@src/(.*)$': '<rootDir>/src/$1'
-  },
   globals: {
     'ts-jest': {
       astTransformers: {
@@ -35,3 +25,5 @@ module.exports = {
     }
   }
 };
+
+module.exports = config;

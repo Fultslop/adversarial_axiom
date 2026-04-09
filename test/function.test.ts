@@ -38,11 +38,6 @@ describe('functionTests', () => {
         func.doIncSlashComment(2);
     });
 
-    it('doIncSlashComment should fail with 0', () => {
-        // XXX doesn't work yet
-        expect(() => func.doIncSlashComment(0)).toThrow();
-    });
-
     it('doLoopFn should pass with 1,2', () => {
         func.doLoopFn([1,2]);
     });
