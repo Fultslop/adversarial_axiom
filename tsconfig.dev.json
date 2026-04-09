@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "plugins": [{ "transform": "./node_modules/fsprepost/dist/src/transformer.js" }]
+  }
+}
