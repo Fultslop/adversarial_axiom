@@ -53,7 +53,7 @@
     "typescript": "^6.0.2"
   },
   "dependencies": {
-    "fsprepost": "^1.0.21",
+    "fsprepost": "^1.0.22",
     "js-yaml": "^4.1.1"
   }
 }
