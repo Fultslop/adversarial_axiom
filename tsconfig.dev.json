@@ -2,6 +2,6 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "ignoreDeprecations": "6.0",
-    "plugins": [{ "transform": "./node_modules/fsprepost/dist/src/transformer.js" }]
+    "plugins": [{ "transform": "./node_modules/axiom/dist/src/transformer.js" }]
   }
 }

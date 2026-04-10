@@ -1,7 +1,7 @@
-# fsprepost v1.1.2 — Feature Status Report
+# axiom v1.1.2 — Feature Status Report
 
 > **Generated:** 9 April 2026  
-> **fsprepost version:** 1.1.2 (installed via npm)  
+> **axiom version:** 1.1.2 (installed via npm)  
 > **Test suite:** 219 passing + 1 todo across 16 test suites  
 > **Previous baseline:** FEATURE_STATUS_v1.1.0.md (195 tests across 15 suites)
 
@@ -24,16 +24,16 @@
 The build output confirms the new validation is working:
 
 ```
-[fsprepost] Contract validation warning in noReturnTypeAnnotation:
+[axiom] Contract validation warning in noReturnTypeAnnotation:
   @post result === 42 — 'result' used but no return type is declared; @post dropped
 
-[fsprepost] Contract validation warning in voidReturnPost:
+[axiom] Contract validation warning in voidReturnPost:
   @post result === undefined — 'result' used but return type is 'void'; @post dropped
 
-[fsprepost] Contract validation warning in neverReturnPost:
+[axiom] Contract validation warning in neverReturnPost:
   @post result === 0 — 'result' used but return type is 'never'; @post dropped
 
-[fsprepost] Contract validation warning in postVoidResult:
+[axiom] Contract validation warning in postVoidResult:
   @post result === undefined — 'result' used but return type is 'void'; @post dropped
 ```
 
@@ -114,7 +114,7 @@ export function noReturnTypeAnnotation(x: number) {
 
 Build output:
 ```
-[fsprepost] Contract validation warning in noReturnTypeAnnotation:
+[axiom] Contract validation warning in noReturnTypeAnnotation:
   @post result === 42 — 'result' used but no return type is declared; @post dropped
 ```
 
@@ -141,7 +141,7 @@ export function voidReturnPost(x: number): void {
 
 Build output:
 ```
-[fsprepost] Contract validation warning in voidReturnPost:
+[axiom] Contract validation warning in voidReturnPost:
   @post result === undefined — 'result' used but return type is 'void'; @post dropped
 ```
 
@@ -169,7 +169,7 @@ export function neverReturnPost(x: number): never {
 
 Build output:
 ```
-[fsprepost] Contract validation warning in neverReturnPost:
+[axiom] Contract validation warning in neverReturnPost:
   @post result === 0 — 'result' used but return type is 'never'; @post dropped
 ```
 
@@ -239,7 +239,7 @@ export function validReturnPost(x: number): number {
 
 Build path test confirms warnings in tspc output:
 ```
-[fsprepost] Contract validation warning in noReturnTypeAnnotation:
+[axiom] Contract validation warning in noReturnTypeAnnotation:
   @post result === 42 — 'result' used but no return type is declared; @post dropped
 ```
 
@@ -438,6 +438,6 @@ All features from v1.1.0 remain functional. No regressions detected.
 
 ## Conclusion
 
-**fsprepost v1.1.2 is production-ready** with comprehensive validation of `@post result` conditions. The new features prevent silent failures and provide clear guidance to developers when their contract conditions cannot be enforced.
+**axiom v1.1.2 is production-ready** with comprehensive validation of `@post result` conditions. The new features prevent silent failures and provide clear guidance to developers when their contract conditions cannot be enforced.
 
 All existing functionality remains intact, and the test suite has grown by 24 tests to validate the new capabilities.

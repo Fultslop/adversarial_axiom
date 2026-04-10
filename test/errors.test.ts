@@ -2,7 +2,7 @@ import {
     ContractError,
     ContractViolationError,
     InvariantViolationError,
-} from 'fsprepost';
+} from 'axiom';
 import {
     errorPreAmount,
     errorPreName,

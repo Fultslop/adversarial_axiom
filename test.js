@@ -7,8 +7,8 @@ exports.voidFunctionWithPre = voidFunctionWithPre;
 exports.validReturnPost = validReturnPost;
 exports.validStringReturnPost = validStringReturnPost;
 exports.validBooleanReturnPost = validBooleanReturnPost;
-const { ContractViolationError, InvariantViolationError } = require("fsprepost");
-// fsprepost 1.1.2 — @post result type validation fixtures
+const { ContractViolationError, InvariantViolationError, snapshot, deepSnapshot } = require("axiom");
+// axiom 1.1.2 — @post result type validation fixtures
 // Feature 1: @post result without return type annotation
 // Should NOT inject @post and should emit warning: "no return type is declared"
 /**
@@ -51,34 +51,34 @@ function voidFunctionWithPre(x) {
  * @post result >= 0
  */
 function validReturnPost(x) {
-    const result = (() => {
+    const __axiom_result__ = (() => {
         return Math.abs(x);
     })();
-    if (!(result >= 0))
+    if (!(__axiom_result__ >= 0))
         throw new ContractViolationError("POST", "result >= 0", "validReturnPost");
-    return result;
+    return __axiom_result__;
 }
 // Feature 5b: Additional valid case with string return type
 /**
  * @post result.length > 0
  */
 function validStringReturnPost(x) {
-    const result = (() => {
+    const __axiom_result__ = (() => {
         return x.toUpperCase();
     })();
-    if (!(result.length > 0))
+    if (!(__axiom_result__.length > 0))
         throw new ContractViolationError("POST", "result.length > 0", "validStringReturnPost");
-    return result;
+    return __axiom_result__;
 }
 // Feature 5c: Additional valid case with boolean return type
 /**
  * @post result === true
  */
 function validBooleanReturnPost(x) {
-    const result = (() => {
+    const __axiom_result__ = (() => {
         return x > 0;
     })();
-    if (!(result === true))
+    if (!(__axiom_result__ === true))
         throw new ContractViolationError("POST", "result === true", "validBooleanReturnPost");
-    return result;
+    return __axiom_result__;
 }

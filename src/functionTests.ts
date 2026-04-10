@@ -87,12 +87,6 @@ export function doNumberRange(a: number, b: number) {
     return a + b;  
 }
 
-// // xxx doesn't work yet
-// @pre v > 1
-export function doIncSlashComment(v: number) : number {
-    return v += 1;
-}
-
 /**
  * @post result > 0  
  */

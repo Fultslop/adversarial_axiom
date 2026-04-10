@@ -1,4 +1,4 @@
-// Interface feature tests — tests for the 6 key interface features in fsprepost v1.1.0
+// Interface feature tests — tests for the 6 key interface features in axiom v1.1.0
 
 // Feature 1: @pre/@post on interface methods applied to all implementing classes
 export interface IValidated {

@@ -7,7 +7,7 @@ describe('Phase 2: Known limitation gap tests', () => {
     let buildOutput: string;
 
     beforeAll(() => {
-        const logFile = `${os.tmpdir()}/fsprepost_gaps_${Date.now()}.log`;
+        const logFile = `${os.tmpdir()}/axiom_gaps_${Date.now()}.log`;
         execSync(`cmd.exe /c "scripts\\build-dev.bat ${logFile}"`, {
             encoding: 'utf8',
             stdio: ['pipe', 'pipe', 'pipe'],
@@ -20,7 +20,7 @@ describe('Phase 2: Known limitation gap tests', () => {
         it('should warn that x is not a known parameter', () => {
             expect(buildOutput).toContain('destructuredPre');
             expect(buildOutput).toContain('x');
-            expect(buildOutput).toContain('[fsprepost]');
+            expect(buildOutput).toContain('[axiom]');
         });
     });
 

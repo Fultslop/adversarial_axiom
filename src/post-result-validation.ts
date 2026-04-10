@@ -1,4 +1,4 @@
-// fsprepost 1.1.2 — @post result type validation fixtures
+// axiom 1.1.2 — @post result type validation fixtures
 
 // Feature 1: @post result without return type annotation
 // Should NOT inject @post and should emit warning: "no return type is declared"

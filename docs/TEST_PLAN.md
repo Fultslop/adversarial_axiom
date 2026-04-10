@@ -1,6 +1,6 @@
-# fsprepost Acceptance Test Plan
+# axiom Acceptance Test Plan
 
-This document outlines the complete test strategy for the `fsprepost` TypeScript contract transformer. It categorises tests into three groups:
+This document outlines the complete test strategy for the `axiom` TypeScript contract transformer. It categorises tests into three groups:
 
 | Category | Meaning |
 |---|---|
@@ -219,7 +219,7 @@ This document outlines the complete test strategy for the `fsprepost` TypeScript
 | # | Feature | Status | Test File |
 |---|---------|--------|-----------|
 | 12.1 | Warning count ≥ 10 | COVERED | `test/build.test.ts` |
-| 12.2 | Warning format `[fsprepost] Contract validation warning` | COVERED | `test/build.test.ts` |
+| 12.2 | Warning format `[axiom] Contract validation warning` | COVERED | `test/build.test.ts` |
 | 12.3 | Unknown identifier warning text | COVERED | `test/build-warnings.test.ts` |
 | 12.4 | Type mismatch warning text | COVERED | `test/build-warnings.test.ts` |
 | 12.5 | Assignment expression warning text | COVERED | `test/build-warnings.test.ts` |

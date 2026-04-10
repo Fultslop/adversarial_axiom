@@ -7,7 +7,7 @@ describe('Build warnings (Phase 12)', () => {
     let buildOutput: string;
 
     beforeAll(() => {
-        const logFile = `${os.tmpdir()}/fsprepost_warnings_${Date.now()}.log`;
+        const logFile = `${os.tmpdir()}/axiom_warnings_${Date.now()}.log`;
         execSync(`cmd.exe /c "scripts\\build-dev.bat ${logFile}"`, {
             encoding: 'utf8',
             stdio: ['pipe', 'pipe', 'pipe'],
@@ -19,7 +19,7 @@ describe('Build warnings (Phase 12)', () => {
     describe('unknown identifier warning (12.3)', () => {
         it('should warn when @pre references non-parameter v', () => {
             expect(buildOutput).toContain('v');
-            expect(buildOutput).toContain('[fsprepost]');
+            expect(buildOutput).toContain('[axiom]');
             expect(buildOutput).toContain('shouldWarnVDoesNotExistsDuringBuild');
         });
     });

@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import transformerFactory from 'fsprepost/dist/src/transformer';
+import transformerFactory from 'axiom/dist/src/transformer';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -70,7 +70,7 @@ function compileWithoutChecker(source: string): { output: string; warnings: stri
     };
 }
 
-describe('fsprepost 1.1.2 — @post result type validation', () => {
+describe('axiom 1.1.2 — @post result type validation', () => {
 
     // =========================================================================
     // Feature 1: @post result without return type annotation
@@ -400,7 +400,7 @@ export const testResult = result;
             it('should emit warning during npm run build:dev', () => {
                 // This test uses the actual build script
                 // The fixture file post-result-validation.ts should trigger warnings
-                const logFile = `${os.tmpdir()}/fsprepost_112_build_${Date.now()}.log`;
+                const logFile = `${os.tmpdir()}/axiom_112_build_${Date.now()}.log`;
                 
                 try {
                     execSync(`cmd.exe /c "scripts\\build-dev.bat ${logFile}"`, {
@@ -411,7 +411,7 @@ export const testResult = result;
                     const buildOutput = fs.readFileSync(logFile, 'utf8');
                     
                     // Should contain warnings for our fixtures
-                    expect(buildOutput).toContain('[fsprepost]');
+                    expect(buildOutput).toContain('[axiom]');
                     
                     // Check for specific warnings
                     const hasNoReturnTypeWarning = buildOutput.includes('noReturnTypeAnnotation') ||
@@ -425,7 +425,7 @@ export const testResult = result;
                     // Build might fail due to other issues, but we can still check log
                     try {
                         const buildOutput = fs.readFileSync(logFile, 'utf8');
-                        expect(buildOutput).toContain('[fsprepost]');
+                        expect(buildOutput).toContain('[axiom]');
                     } catch {
                         // If log file doesn't exist, skip this test
                         console.warn('Build log file not available, skipping build path test');
@@ -457,7 +457,7 @@ export function noReturnTypeJest(x: number) {
                 // Warnings may only be emitted during build, not during transpileModule
                 if (warnings.length > 0) {
                     const hasWarning = warnings.some(w =>
-                        w.includes('[fsprepost]') &&
+                        w.includes('[axiom]') &&
                         w.toLowerCase().includes('return type')
                     );
                     expect(hasWarning).toBe(true);
@@ -476,7 +476,7 @@ export function voidReturnJest(x: number): void {
                 const { warnings } = compileWithFullChecker(source);
                 if (warnings.length > 0) {
                     const hasVoidWarning = warnings.some(w =>
-                        w.includes('[fsprepost]') &&
+                        w.includes('[axiom]') &&
                         w.includes('void')
                     );
                     expect(hasVoidWarning).toBe(true);
@@ -495,7 +495,7 @@ export function neverReturnJest(x: number): never {
                 const { warnings } = compileWithFullChecker(source);
                 if (warnings.length > 0) {
                     const hasNeverWarning = warnings.some(w =>
-                        w.includes('[fsprepost]') &&
+                        w.includes('[axiom]') &&
                         w.includes('never')
                     );
                     expect(hasNeverWarning).toBe(true);

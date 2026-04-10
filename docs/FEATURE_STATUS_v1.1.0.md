@@ -1,7 +1,7 @@
-# fsprepost v1.1.0 — Feature Status Report
+# axiom v1.1.0 — Feature Status Report
 
 > **Generated:** 9 April 2026  
-> **fsprepost version:** 1.1.0 (installed via npm)  
+> **axiom version:** 1.1.0 (installed via npm)  
 > **Test suite:** 195 passing + 1 todo across 15 test suites  
 > **Previous baseline:** FEATURE_STATUS.md (177 tests across 14 suites)
 
@@ -151,7 +151,7 @@ ts.transpileModule(source, {
 
 ## What Works Today (User Quick Reference)
 
-If you are an end user evaluating whether to adopt fsprepost v1.1.0, these are the **reliable, tested capabilities**:
+If you are an end user evaluating whether to adopt axiom v1.1.0, these are the **reliable, tested capabilities**:
 
 ### Core Features (from previous version)
 - ✅ `@pre` and `@post` on exported functions with primitive parameters

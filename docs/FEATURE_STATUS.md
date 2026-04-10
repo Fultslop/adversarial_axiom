@@ -1,4 +1,4 @@
-# fsprepost — Feature Status
+# axiom — Feature Status
 
 > Generated from `docs/TEST_PLAN.md`. This document tells you at a glance what works, what's partially working, what has known limitations, and what isn't implemented yet.
 
@@ -73,7 +73,7 @@
 
 ## What Works Today (User Quick Reference)
 
-If you are an end user evaluating whether to adopt fsprepost, these are the **reliable, tested capabilities**:
+If you are an end user evaluating whether to adopt axiom, these are the **reliable, tested capabilities**:
 
 - `@pre` and `@post` on exported functions with primitive parameters (`number`, `string`, `boolean`)
 - `@pre` and `@post` on public class methods

@@ -20,7 +20,7 @@ const config: Config = {
   globals: {
     'ts-jest': {
       astTransformers: {
-        before: ['fsprepost/dist/src/transformer']
+        before: ['axiom/dist/src/transformer']
       }
     }
   }

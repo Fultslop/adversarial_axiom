@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import transformerFactory from 'fsprepost/dist/src/transformer';
+import transformerFactory from 'axiom/dist/src/transformer';
 import {
     PositiveProcessor,
     DoubleProcessor,
@@ -76,7 +76,7 @@ function compileWithoutChecker(source: string, options?: { interfaceParamMismatc
     };
 }
 
-describe('Interface Features - fsprepost v1.1.0', () => {
+describe('Interface Features - axiom v1.1.0', () => {
 
     // =========================================================================
     // Feature 1: @pre/@post on interface methods applied to all implementing classes
