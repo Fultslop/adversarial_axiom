@@ -53,7 +53,7 @@
     "typescript": "^6.0.2"
   },
   "dependencies": {
-    "axiom": "^0.8.1",
+    "@fultslop/axiom": "^0.8.3",
     "js-yaml": "^4.1.1"
   }
 }

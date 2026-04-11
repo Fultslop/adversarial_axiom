@@ -1,5 +1,5 @@
 // Test fixtures for manual pre()/post() assertions (Phase 7)
-import { pre, post } from 'axiom';
+import { pre, post } from '@fultslop/axiom';
 
 // 7.1/7.3: pre() throws ContractViolationError with type: 'PRE'
 export function manualPrePass(x: number): number {

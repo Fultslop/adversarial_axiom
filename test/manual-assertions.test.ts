@@ -1,6 +1,6 @@
 import {
     ContractViolationError,
-} from 'axiom';
+} from '@fultslop/axiom';
 import {
     manualPrePass,
     manualPreFail,

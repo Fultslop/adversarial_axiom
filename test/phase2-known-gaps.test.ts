@@ -15,12 +15,13 @@ describe('Phase 2: Known limitation gap tests', () => {
         buildOutput = fs.readFileSync(logFile, 'utf8');
     });
 
-    // 1.23: Destructured parameter — binding names not recognised
-    describe('destructured parameter (1.23)', () => {
-        it('should warn that x is not a known parameter', () => {
-            expect(buildOutput).toContain('destructuredPre');
-            expect(buildOutput).toContain('x');
-            expect(buildOutput).toContain('[axiom]');
+    // 1.23: Destructured parameter — NOW SUPPORTED in axiom v0.8.3
+    // Binding names are now recognized and contracts are properly injected
+    describe('destructured parameter (1.23) - NOW SUPPORTED', () => {
+        it('should NOT warn because destructured params are now supported', () => {
+            // axiom v0.8.3 now properly recognizes destructured parameter binding names
+            // and injects contracts without warnings
+            expect(buildOutput).not.toContain('destructuredPre');
         });
     });
 
@@ -67,11 +68,11 @@ describe('Phase 2: Known limitation gap tests', () => {
         });
     });
 
-    // 9.7: Non-whitelisted global Math — warns
+    // 9.7: Non-whitelisted global Math — NOW WHITELISTED (GLOBAL_IDENTIFIERS update)
     describe('Math global (9.7)', () => {
-        it('should warn that Math is not a known parameter', () => {
-            expect(buildOutput).toContain('mathGlobalPre');
-            expect(buildOutput).toContain('Math');
+        it('should NOT warn that Math is now a known global identifier', () => {
+            // Math is now part of GLOBAL_IDENTIFIERS and should NOT produce a warning
+            expect(buildOutput).not.toContain('mathGlobalPre');
         });
     });
 

@@ -2,7 +2,7 @@ import {
     ContractError,
     ContractViolationError,
     InvariantViolationError,
-} from 'axiom';
+} from '@fultslop/axiom';
 import {
     errorPreAmount,
     errorPreName,

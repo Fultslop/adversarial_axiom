@@ -7,7 +7,7 @@ exports.voidFunctionWithPre = voidFunctionWithPre;
 exports.validReturnPost = validReturnPost;
 exports.validStringReturnPost = validStringReturnPost;
 exports.validBooleanReturnPost = validBooleanReturnPost;
-const { ContractViolationError, InvariantViolationError, snapshot, deepSnapshot } = require("axiom");
+const { ContractViolationError, InvariantViolationError, snapshot, deepSnapshot } = require("@fultslop/axiom");
 // axiom 1.1.2 — @post result type validation fixtures
 // Feature 1: @post result without return type annotation
 // Should NOT inject @post and should emit warning: "no return type is declared"
@@ -43,7 +43,12 @@ function neverReturnPost(x) {
 function voidFunctionWithPre(x) {
     if (!(x > 0))
         throw new ContractViolationError("PRE", "x > 0", "voidFunctionWithPre");
-    console.log('executed with', x);
+    const __axiom_result__ = (() => {
+        console.log("executed with", x);
+    })();
+    if (!(console.log("side effect")))
+        throw new ContractViolationError("POST", "console.log('side effect')", "voidFunctionWithPre");
+    return __axiom_result__;
 }
 // Feature 5: @post result with valid return type is unaffected
 // Should inject @post check normally with no warnings

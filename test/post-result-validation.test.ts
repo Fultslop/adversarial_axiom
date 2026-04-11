@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import transformerFactory from 'axiom/dist/src/transformer';
+import transformerFactory from '@fultslop/axiom/dist/src/transformer';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';

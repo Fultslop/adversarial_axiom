@@ -1,7 +1,8 @@
 // Phase 2: Known limitation gap tests — these assert the WARNINGS, not functionality
-// These are items 1.23, 1.24, 1.25, 1.26, 2.12, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8, 9.7, 9.9
+// These are items 1.24, 1.25, 1.26, 2.12, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8, 9.7, 9.9
+// NOTE: 1.23 (destructured params) is NOW SUPPORTED in axiom v0.8.3
 
-// 1.23: Destructured parameter — binding names not recognised
+// 1.23: Destructured parameter — NOW SUPPORTED in axiom v0.8.3
 /**
  * @pre x > 0
  */
