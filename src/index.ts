@@ -1,5 +1,5 @@
-import {stringTestFn, doArrFn, doMapExistFn, doTypeOfFn, doProduceFn, doProducePostFailFn} from './functionTests';
-import {Foo} from './classTests';
+import {stringTestFn, doArrFn, doMapExistFn, doTypeOfFn, doProduceFn, doProducePostFailFn} from './function-fixtures';
+import {Foo} from './class-fixtures';
 
 try {
     const a = 'foo';

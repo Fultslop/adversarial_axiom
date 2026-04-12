@@ -6,7 +6,7 @@ import {
     ConstructorContracts,
     BaseContract,
     DerivedContract,
-} from '@src/phase3-missing-features';
+} from '@src/alternate-fn-form-fixtures';
 
 describe('Phase 3: Missing feature tests (not yet in scope)', () => {
 

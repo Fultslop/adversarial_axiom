@@ -1,18 +1,11 @@
-import {execSync} from 'child_process';
-import * as os from 'os';
-import * as fs from 'fs';
+import { getBuildOutput } from './helpers/build-output';
 
 describe('Build warnings (Phase 12)', () => {
 
     let buildOutput: string;
 
     beforeAll(() => {
-        const logFile = `${os.tmpdir()}/axiom_warnings_${Date.now()}.log`;
-        execSync(`cmd.exe /c "scripts\\build-dev.bat ${logFile}"`, {
-            encoding: 'utf8',
-            stdio: ['pipe', 'pipe', 'pipe'],
-        });
-        buildOutput = fs.readFileSync(logFile, 'utf8');
+        buildOutput = getBuildOutput();
     });
 
     // 12.3: Warning for unknown identifier

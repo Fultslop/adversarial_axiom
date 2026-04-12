@@ -1,6 +1,6 @@
-import * as func from '@src/functionTests';
+import * as func from '@src/function-fixtures';
 
-describe('functionTests', () => {
+describe('function-fixtures', () => {
     it('should pass with a validString', () => {
         func.stringTestFn('foo');
     });

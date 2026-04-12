@@ -1,6 +1,6 @@
-import {Foo} from '@src/classTests';
+import {Foo} from '@src/class-fixtures';
 
-describe('classTests', () => {
+describe('class-fixtures', () => {
     
     it('should pass with a static >= 1', () => {
         expect(Foo.doStaticFn(1)).toBe(2);

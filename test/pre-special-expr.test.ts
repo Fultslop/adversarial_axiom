@@ -8,7 +8,7 @@ import {
     shortCircuitTrue,
     BaseClass,
     DerivedClass,
-} from '@src/phase2-special-expr';
+} from '@src/pre-special-expr-fixtures';
 
 describe('Phase 2: Special expressions in @pre', () => {
 

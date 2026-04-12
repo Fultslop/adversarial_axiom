@@ -1,9 +1,46 @@
-# axiom v0.8.6 — Feature Status Report
+# axiom v0.8.7 — Feature Status Report
 
-> **Generated:** 11 April 2026
-> **axiom version:** 0.8.6
-> **Test suite:** 333 passing + 1 todo across 20 test suites
+> **Generated:** 11 April 2026 (updated for v0.8.7)
+> **axiom version:** 0.8.7
+> **Test suite:** 338 passing + 1 todo across 20 test suites
 > **Previous baseline:** FEATURE_STATUS_v1.1.2.md (219 passing + 1 todo across 16 suites)
+
+---
+
+## Changelog
+
+### v0.8.7 — Runtime Scoping Fix for Enum & Module Constants
+
+**What Changed:**
+- ✅ **FIXED:** Runtime scoping issue with enum members and module-level constants
+- ✅ Contract expressions now use proper `exports.EnumMember` and `exports.CONSTANT` references
+- ✅ Both compile-time validation AND runtime enforcement now work correctly
+- ✅ `allowIdentifiers` transformer option works in transpileModule mode (Jest)
+
+**Before (v0.8.6):**
+```javascript
+// Compiled output - BROKEN:
+function moduleConstantPre(x) {
+    if (!(x < MAX_LIMIT))  // ❌ ReferenceError: MAX_LIMIT is not defined
+        throw new ContractViolationError("PRE", "x < MAX_LIMIT", "moduleConstantPre");
+    return x;
+}
+```
+
+**After (v0.8.7):**
+```javascript
+// Compiled output - FIXED:
+function moduleConstantPre(x) {
+    if (!(x < exports.MAX_LIMIT))  // ✅ Properly scoped reference
+        throw new ContractViolationError("PRE", "x < MAX_LIMIT", "moduleConstantPre");
+    return x;
+}
+```
+
+### v0.8.6 — Enum & Module Constant Resolution
+- Enum members automatically resolved via TypeChecker scope analysis
+- Module-level constants automatically resolved via TypeChecker scope analysis
+- `allowIdentifiers` transformer option for transpileModule mode
 
 ---
 
@@ -125,17 +162,17 @@
 | **TL5** | No-substitution template with negation | ✅ | 2 tests | `` @pre status !== `inactive` `` works |
 | **TL-L1** | Interpolated template literals | ❌ | 2 tests | `` @pre label === `item_${id}` `` NOT supported |
 
-### Enum & Module Constant Resolution (v0.8.6)
+### Enum & Module Constant Resolution (v0.8.6, FIXED in v0.8.7)
 
 | # | Feature | Status | Compile-Time | Runtime | Notes |
 |---|---------|:------:|:------------:|:-------:|-------|
-| **EC1** | Enum members in @pre (full program) | ✅ | ✅ Validated | ⚠️ Scoping issue | TypeChecker resolves, but runtime may ReferenceError |
-| **EC2** | Enum members in @post (full program) | ✅ | ✅ Validated | ⚠️ Scoping issue | Same runtime scoping limitation |
-| **EC3** | Module constants in @pre (full program) | ✅ | ✅ Validated | ⚠️ Scoping issue | TypeChecker resolves, but runtime may ReferenceError |
-| **EC4** | Module constants in @post (full program) | ✅ | ✅ Validated | ⚠️ Scoping issue | Same runtime scoping limitation |
+| **EC1** | Enum members in @pre (full program) | ✅ | ✅ Validated | ✅ Works | **FIXED in v0.8.7** — proper `exports.Enum` scoping |
+| **EC2** | Enum members in @post (full program) | ✅ | ✅ Validated | ✅ Works | **FIXED in v0.8.7** |
+| **EC3** | Module constants in @pre (full program) | ✅ | ✅ Validated | ✅ Works | **FIXED in v0.8.7** — proper `exports.CONST` scoping |
+| **EC4** | Module constants in @post (full program) | ✅ | ✅ Validated | ✅ Works | **FIXED in v0.8.7** |
 | **EC5** | Complex enum expressions | ⚠️ | ⚠️ Partial | ⚠️ Not injected | Mixed enum + other ops may skip contract injection |
-| **EC6** | Mixed enum and constant expressions | ✅ | ✅ Validated | ⚠️ Scoping issue | TypeChecker works, runtime scoping issue |
-| **EC-L1** | allowIdentifiers option | N/A | N/A | N/A | Not tested (requires transpileModule mode) |
+| **EC6** | Mixed enum and constant expressions | ✅ | ✅ Validated | ✅ Works | **FIXED in v0.8.7** |
+| **EC7** | allowIdentifiers option (transpileModule) | ✅ | ✅ Validated | ✅ Works | Required for Jest/ts-jest environments |
 
 ### Known Limitations
 
@@ -144,8 +181,9 @@
 | **L1** | Arrow functions with destructuring | ❌ | Contracts NOT injected | Use regular function expressions |
 | **L2** | Property access on non-destructured params | ⚠️ | "Unknown identifier" warning | Destructure in param binding instead |
 | **L3** | Interpolated template literals | ❌ | Contracts NOT injected | Use regular strings or concatenation |
-| **L4** | Enum/constant runtime scoping | ⚠️ | ReferenceError at runtime | Use `allowIdentifiers` in transpileModule mode, or reference via `exports.CONST` |
-| **L5** | Complex enum expressions | ⚠️ | Contract may not be injected | Simplify expressions to single enum comparison |
+| **L4** | Complex enum expressions | ⚠️ | Contract may not be injected | Simplify expressions to single enum comparison |
+
+**Note:** The runtime scoping limitation (previously L4 in v0.8.6) was **FIXED in v0.8.7**. Enum members and module-level constants now work correctly at both compile-time and runtime.
 
 ---
 
@@ -153,11 +191,11 @@
 
 ### Test Coverage Growth
 
-| Metric | v1.1.2 | v0.8.6 | Change |
+| Metric | v1.1.2 | v0.8.7 | Change |
 |--------|:------:|:------:|:------:|
 | Total test suites | 16 | 20 | +4 |
-| Total tests | 220 | 334 | +114 |
-| Passing tests | 219 | 333 | +114 |
+| Total tests | 220 | 339 | +119 |
+| Passing tests | 219 | 338 | +119 |
 | Todo tests | 1 | 1 | — |
 | Failing tests | 0 | 0 | — |
 
@@ -169,10 +207,11 @@
 - ✅ **3 new test files**: `destructured-params.test.ts`, `template-literals.test.ts`, `v086-features.test.ts`
 - ✅ **4 new source files**: `destructured-params.ts`, `class-destruct-test.ts`, `template-literals.ts`, `v086-features.ts`
 - ✅ **1 updated test file**: `phase2-known-gaps.test.ts` — enum/constant tests changed from expecting warnings to expecting NO warnings
+- ✅ **1 updated config**: `jest.config.ts` — added `allowIdentifiers` option for transpileModule mode
 - ✅ **v0.8.4 fix**: Class methods now work without @invariant
 - ✅ **v0.8.5 fix**: No-substitution template literals now work
 - ✅ **v0.8.6 fix**: Enum and module constants validated via TypeChecker
-- ⚠️ **v0.8.6 limitation discovered**: Runtime scoping issue with enum/constant references
+- ✅ **v0.8.7 fix**: Runtime scoping issue resolved — enum/constant references work at runtime
 - ✅ **No regressions** — all existing features still work
 
 ---
@@ -322,12 +361,11 @@ The transformer injects contract expressions using the identifier names as writt
    }
    ```
 
-### Recommendation for v0.8.6 Users
+### Recommendation for v0.8.7 Users
 
-- ✅ **Use enum members and module constants in contracts** — compile-time validation works
-- ⚠️ **Be aware of runtime scoping issues** — test contracts at runtime
-- ✅ **Use `allowIdentifiers` option** if using transpileModule mode
-- ⚠️ **For critical contracts**, consider manual `pre()` assertions until runtime scoping is fixed
+- ✅ **Use enum members and module constants in contracts** — compile-time AND runtime both work
+- ✅ **Use `allowIdentifiers` option** if using transpileModule mode (Jest)
+- ✅ **No workarounds needed** — v0.8.7 fixed all runtime scoping issues
 
 ---
 
@@ -338,12 +376,11 @@ The transformer injects contract expressions using the identifier names as writt
 - ✅ **Use destructured params in async functions**
 - ✅ **Use destructured params in class methods** (v0.8.4 fix)
 - ✅ **Use no-substitution template literals** (v0.8.5 fix)
-- ✅ **Reference enum members in contracts** — compile-time validation works (v0.8.6)
-- ✅ **Reference module constants in contracts** — compile-time validation works (v0.8.6)
+- ✅ **Reference enum members in contracts** — compile-time AND runtime work correctly (v0.8.7 fix)
+- ✅ **Reference module constants in contracts** — compile-time AND runtime work correctly (v0.8.7 fix)
+- ✅ **Use allowIdentifiers option** in transpileModule mode (Jest)
 
 ### Use With Caution
-- ⚠️ **Enum members in @pre/@post at runtime** — may cause ReferenceError (test thoroughly)
-- ⚠️ **Module constants in @pre/@post at runtime** — may cause ReferenceError (test thoroughly)
 - ⚠️ **Complex enum expressions** — may not inject contracts
 
 ### Not Supported
@@ -376,17 +413,17 @@ The transformer injects contract expressions using the identifier names as writt
 
 ## Conclusion
 
-**axiom v0.8.6 represents significant progress in contract expression capabilities**, with **114 new tests** validating destructured parameters, template literals, and enum/constant resolution.
+**axiom v0.8.7 represents production-ready contract expression capabilities**, with **119 new tests** validating destructured parameters, template literals, and enum/constant resolution with full runtime support.
 
 ### Key Achievements
 - ✅ **Destructured parameters** fully supported in functions and class methods
 - ✅ **No-substitution template literals** work correctly
-- ✅ **Enum and module constant validation** via TypeChecker (compile-time)
+- ✅ **Enum and module constant validation** via TypeChecker — compile-time AND runtime both work (v0.8.7 fix)
+- ✅ **allowIdentifiers transformer option** works in transpileModule mode
 - ✅ **Zero regressions** from previous versions
 
 ### Known Issues
-- ⚠️ **Runtime scoping of enum/constant references** — compile-time validation works but runtime may fail with ReferenceError
 - ⚠️ **Complex enum expressions** — may not inject contracts
 - ❌ **Interpolated template literals** — still not supported
 
-**Overall: axiom v0.8.6 is production-ready with caveats around runtime scoping of external identifiers.** Users should test contract enforcement at runtime, especially when referencing enum members or module-level constants.
+**Overall: axiom v0.8.7 is production-ready with full compile-time and runtime support for all major contract expression features.**

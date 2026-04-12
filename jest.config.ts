@@ -20,7 +20,12 @@ const config: Config = {
   globals: {
     'ts-jest': {
       astTransformers: {
-        before: ['@fultslop/axiom/dist/src/transformer']
+        before: [{
+          path: '@fultslop/axiom/dist/src/transformer',
+          options: {
+            allowIdentifiers: ['Priority', 'Status', 'Mode', 'MAX_RETRIES', 'MIN_TIMEOUT', 'DEFAULT_RESULT', 'STRICT_THRESHOLD', 'MAX_LIMIT']
+          }
+        }]
       }
     }
   }

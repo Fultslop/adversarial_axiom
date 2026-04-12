@@ -1,6 +1,4 @@
-import {execSync} from 'child_process';
-import * as os from 'os';
-import * as fs from 'fs';
+import { getBuildOutput } from './helpers/build-output';
 import {
     Priority,
     enumMemberPre,
@@ -13,17 +11,13 @@ import {
     mixedEnumAndConstant,
     interpolatedTemplateControl,
 } from '../src/v086-features';
+import { ContractViolationError } from '@fultslop/axiom';
 
 describe('v0.8.6 Features: Enum & Module Constants', () => {
     let buildOutput: string;
 
     beforeAll(() => {
-        const logFile = `${os.tmpdir()}/axiom_v086_${Date.now()}.log`;
-        execSync(`cmd.exe /c "scripts\\build-dev.bat ${logFile}"`, {
-            encoding: 'utf8',
-            stdio: ['pipe', 'pipe', 'pipe'],
-        });
-        buildOutput = fs.readFileSync(logFile, 'utf8');
+        buildOutput = getBuildOutput();
     });
 
     describe('Build warnings - enum and constant resolution', () => {
@@ -66,37 +60,18 @@ describe('v0.8.6 Features: Enum & Module Constants', () => {
             expect(() => enumMemberPre(Priority.Critical)).not.toThrow();
         });
 
-        it('should reject non-matching enum member (Priority.Low) - or fail with ReferenceError', () => {
-            try {
-                enumMemberPre(Priority.Low);
-                // If no error, contract wasn't enforced (scoping issue)
-            } catch (e: unknown) {
-                // Either ContractViolationError (if working) or ReferenceError (scoping issue)
-                const name = e instanceof Error ? e.name : 'Unknown';
-                expect(['ContractViolationError', 'ReferenceError']).toContain(name);
-            }
+        it('should reject non-matching enum member (Priority.Low)', () => {
+            expect(() => enumMemberPre(Priority.Low)).toThrow(ContractViolationError);
         });
 
-        it('should reject non-matching enum member (Priority.Medium) - or fail with ReferenceError', () => {
-            try {
-                enumMemberPre(Priority.Medium);
-            } catch (e: unknown) {
-                const name = e instanceof Error ? e.name : 'Unknown';
-                expect(['ContractViolationError', 'ReferenceError']).toContain(name);
-            }
+        it('should reject non-matching enum member (Priority.Medium)', () => {
+            expect(() => enumMemberPre(Priority.Medium)).toThrow(ContractViolationError);
         });
     });
 
     describe('Enum member references in @post', () => {
-        // NOTE: v0.8.6 resolves enum members via TypeChecker for validation,
-        // but the runtime reference in contract expressions may not be properly scoped
-        it('should have @post contract injected (but may have runtime scoping issues)', () => {
-            try {
-                enumMemberPost();
-            } catch (e: unknown) {
-                // ReferenceError expected if Priority.High not in scope at runtime
-                expect(e instanceof Error ? e.name : 'Unknown').toBe('ReferenceError');
-            }
+        it('should accept when @post result matches enum member', () => {
+            expect(() => enumMemberPost()).not.toThrow();
         });
     });
 
@@ -113,42 +88,40 @@ describe('v0.8.6 Features: Enum & Module Constants', () => {
     });
 
     describe('Module-level constants in @pre', () => {
-        // NOTE: v0.8.6 resolves module constants via TypeChecker for validation,
-        // but the runtime reference in contract expressions may not be properly scoped
-        // This test documents current behavior
-        it('should have contract injected (but may have runtime scoping issues)', () => {
-            // The contract IS injected (no build warning), but runtime may fail
-            // This is a known limitation in v0.8.6
-            try {
-                moduleConstantsPre(3, 100);
-                // If we get here, contract passed (constants accessible)
-            } catch (e: unknown) {
-                // If we get ReferenceError, constants aren't in scope at runtime
-                // This is expected in v0.8.6
-                expect(e instanceof Error ? e.name : 'Unknown').toBe('ReferenceError');
-            }
+        it('should accept when retries <= MAX_RETRIES and timeout >= MIN_TIMEOUT', () => {
+            expect(() => moduleConstantsPre(3, 100)).not.toThrow();
+        });
+
+        it('should accept when within bounds', () => {
+            expect(() => moduleConstantsPre(1, 200)).not.toThrow();
+        });
+
+        it('should reject when retries > MAX_RETRIES', () => {
+            expect(() => moduleConstantsPre(4, 100)).toThrow(ContractViolationError);
+        });
+
+        it('should reject when timeout < MIN_TIMEOUT', () => {
+            expect(() => moduleConstantsPre(3, 50)).toThrow(ContractViolationError);
         });
     });
 
     describe('Module-level constant in @post', () => {
-        // NOTE: Same scoping issue as @pre - constant not in scope at runtime
-        it('should have @post contract injected (but may have runtime scoping issues)', () => {
-            try {
-                moduleConstantPost();
-            } catch (e: unknown) {
-                expect(e instanceof Error ? e.name : 'Unknown').toBe('ReferenceError');
-            }
+        it('should accept when result === DEFAULT_RESULT', () => {
+            expect(() => moduleConstantPost()).not.toThrow();
         });
     });
 
     describe('Mixed enum and constant', () => {
-        // NOTE: Same scoping issue as moduleConstantsPre
-        it('should have contract injected (but may have runtime scoping issues)', () => {
-            try {
-                mixedEnumAndConstant(Mode.Strict, 95);
-            } catch (e: unknown) {
-                expect(e instanceof Error ? e.name : 'Unknown').toBe('ReferenceError');
-            }
+        it('should accept Mode.Strict with score >= STRICT_THRESHOLD', () => {
+            expect(() => mixedEnumAndConstant(Mode.Strict, 95)).not.toThrow();
+        });
+
+        it('should accept Mode.Lenient (any score)', () => {
+            expect(() => mixedEnumAndConstant(Mode.Lenient, 50)).not.toThrow();
+        });
+
+        it('should reject Mode.Strict with score < STRICT_THRESHOLD', () => {
+            expect(() => mixedEnumAndConstant(Mode.Strict, 80)).toThrow(ContractViolationError);
         });
     });
 

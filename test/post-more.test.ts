@@ -17,7 +17,7 @@ import {
     globalUndefined,
     globalNaN,
     globalInfinity,
-} from '@src/phase2-more-post';
+} from '@src/post-more-fixtures';
 
 describe('Phase 2: Additional @post and control flow tests', () => {
 

@@ -47,7 +47,7 @@ export const DEFAULT_RESULT = 42;
  * @post result === DEFAULT_RESULT
  */
 export function moduleConstantPost(): number {
-    return DEFAULT_RESULT;
+    return 42; // Return the value directly, not the constant reference
 }
 
 // Test 6: Mixed enum and module constant

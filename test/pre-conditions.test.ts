@@ -5,7 +5,7 @@ import {
     doArithmeticPre,
     nonExportedWithPre,
     ServiceClass,
-} from '@src/phase1-fixtures';
+} from '@src/pre-condition-fixtures';
 
 describe('Phase 1: @pre condition variants', () => {
 

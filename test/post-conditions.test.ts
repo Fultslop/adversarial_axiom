@@ -15,7 +15,7 @@ import {
     BalanceAccount,
     PrivateInvariant,
     StaticInvariant,
-} from '@src/phase345-fixtures';
+} from '@src/post-condition-fixtures';
 
 describe('Phase 2, 3, 4, 5: post conditions, evaluation order, class features', () => {
 
