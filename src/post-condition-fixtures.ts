@@ -8,6 +8,14 @@ export function doAndPost(value: number): number {
     return Math.min(100, Math.max(0, value));
 }
 
+// 2.12 / 8.3: Non-primitive return type — now warns on type mismatch (0.88+)
+/**
+ * @post result === "ok"
+ */
+export function nonPrimitivePost(): Record<string, unknown> {
+    return { status: 'ok' };
+}
+
 // 2.5: @post with logical OR
 /**
  * @post result === 0 || result > 10

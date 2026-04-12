@@ -86,3 +86,27 @@ export class ServiceClass {
         return Math.abs(x);
     }
 }
+
+// 8.4: Union-typed param — now warns on type mismatch (0.88+)
+/**
+ * @pre amount === "zero"
+ */
+export function unionTypePre(amount: number | undefined): number {
+    return amount ?? 0;
+}
+
+// 8.6: Unary operand — now warns on type mismatch (0.88+)
+/**
+ * @pre -amount > 0
+ */
+export function unaryOperandPre(amount: string): number {
+    return Number(amount);
+}
+
+// 8.7: Compound conditions — now warns on type narrowing (0.88+)
+/**
+ * @pre amount !== undefined && amount === "zero"
+ */
+export function compoundNarrowingPre(amount: number | undefined): number {
+    return amount ?? 0;
+}

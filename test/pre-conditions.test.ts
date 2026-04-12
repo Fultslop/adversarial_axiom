@@ -5,9 +5,41 @@ import {
     doArithmeticPre,
     nonExportedWithPre,
     ServiceClass,
+    unionTypePre,
+    unaryOperandPre,
+    compoundNarrowingPre,
 } from '@src/pre-condition-fixtures';
+import { getBuildOutput } from './helpers/build-output';
 
 describe('Phase 1: @pre condition variants', () => {
+
+    // Build-output assertions for axiom 0.88+ warnings
+    let buildOutput: string;
+
+    beforeAll(() => {
+        buildOutput = getBuildOutput();
+    });
+
+    // 8.4: Union-typed param — now warns on type mismatch (0.88+)
+    describe('unionTypePre (8.4)', () => {
+        it('should emit type-mismatch warning for union type', () => {
+            expect(buildOutput).toContain('unionTypePre');
+        });
+    });
+
+    // 8.6: Unary operand — now warns on type mismatch (0.88+)
+    describe('unaryOperandPre (8.6)', () => {
+        it('should emit type-mismatch warning for unary expression', () => {
+            expect(buildOutput).toContain('unaryOperandPre');
+        });
+    });
+
+    // 8.7: Compound conditions — now warns on type narrowing (0.88+)
+    describe('compoundNarrowingPre (8.7)', () => {
+        it('should emit type-mismatch warning for compound narrowing', () => {
+            expect(buildOutput).toContain('compoundNarrowingPre');
+        });
+    });
 
     // 1.17: Logical OR in @pre
     describe('doOrPre (1.17)', () => {

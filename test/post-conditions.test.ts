@@ -15,9 +15,25 @@ import {
     BalanceAccount,
     PrivateInvariant,
     StaticInvariant,
+    nonPrimitivePost,
 } from '@src/post-condition-fixtures';
+import { getBuildOutput } from './helpers/build-output';
 
 describe('Phase 2, 3, 4, 5: post conditions, evaluation order, class features', () => {
+
+    // Build-output assertions for axiom 0.88+ warnings
+    let buildOutput: string;
+
+    beforeAll(() => {
+        buildOutput = getBuildOutput();
+    });
+
+    // 2.12 / 8.3: Non-primitive return — now warns on type mismatch (0.88+)
+    describe('nonPrimitivePost (2.12, 8.3)', () => {
+        it('should emit type-mismatch warning for non-primitive return', () => {
+            expect(buildOutput).toContain('nonPrimitivePost');
+        });
+    });
 
     // 2.4: @post with logical AND
     describe('doAndPost (2.4)', () => {
