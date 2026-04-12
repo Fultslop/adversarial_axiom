@@ -123,10 +123,7 @@ export function restArrayDestruct([first, ...rest]: [number, ...number[]]): numb
     return first + rest.reduce((a, b) => a + b, 0);
 }
 
-// 15. Class method with destructured params
-/**
- * @pre config.value > 0
- */
+// 15. Class method with destructured params (WITHOUT @invariant)
 export class DestructuredMethodClass {
     private multiplier: number;
 
@@ -134,6 +131,9 @@ export class DestructuredMethodClass {
         this.multiplier = multiplier;
     }
 
+    /**
+     * @pre value > 0
+     */
     public process({ value }: { value: number }): number {
         return value * this.multiplier;
     }

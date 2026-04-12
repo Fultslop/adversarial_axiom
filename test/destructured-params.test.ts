@@ -205,21 +205,18 @@ describe('Destructured Parameter Binding Support', () => {
     });
 
     describe('Class method with destructured params', () => {
-        // NOTE: Class methods ONLY get destructured contracts when class has @invariant
-        // Without @invariant, the class transformation doesn't fully process methods
+        // FIXED in axiom v0.8.4: Class methods now work with destructured params
+        // even without @invariant on the class
         it('should have contract injected when class has @invariant', () => {
-            // ClassInvariantDestruct has @invariant, so method contracts work
             const { ClassInvariantDestruct } = require('../src/class-destruct-test');
             const instance = new ClassInvariantDestruct(10);
-            // This SHOULD throw because @pre delta > 0 is enforced
             expect(() => instance.add({ delta: 0 })).toThrow(ContractViolationError);
         });
 
-        it('should NOT have contract injected when class lacks @invariant', () => {
-            // ClassMethodDestruct has NO @invariant, so method contracts don't work
+        it('should have contract injected even without @invariant (v0.8.4 fix)', () => {
             const instance = new DestructuredMethodClass(2);
-            // This should NOT throw because no contract was injected
-            expect(() => instance.process({ value: 0 })).not.toThrow();
+            // v0.8.4 now injects contracts for class methods with destructured params
+            expect(() => instance.process({ value: 0 })).toThrow(ContractViolationError);
         });
     });
 

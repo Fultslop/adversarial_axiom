@@ -76,19 +76,19 @@ describe('Phase 2: Known limitation gap tests', () => {
         });
     });
 
-    // 9.9: Enum reference — warns as unknown identifier
-    describe('enum reference (9.9)', () => {
-        it('should warn that Status is not a known parameter', () => {
-            expect(buildOutput).toContain('enumReferencePre');
-            expect(buildOutput).toContain('Status');
+    // 9.9: Enum reference — NOW SUPPORTED in v0.8.6 via TypeChecker scope analysis
+    describe('enum reference (9.9) - NOW SUPPORTED', () => {
+        it('should NOT warn because Status is now resolved via TypeChecker', () => {
+            // v0.8.6 automatically resolves enum members via scope analysis
+            expect(buildOutput).not.toContain('enumReferencePre');
         });
     });
 
-    // 9.10: Module-level constant — warns as unknown identifier
-    describe('module constant (9.10)', () => {
-        it('should warn that MAX_LIMIT is not a known parameter', () => {
-            expect(buildOutput).toContain('moduleConstantPre');
-            expect(buildOutput).toContain('MAX_LIMIT');
+    // 9.10: Module-level constant — NOW SUPPORTED in v0.8.6 via TypeChecker scope analysis
+    describe('module constant (9.10) - NOW SUPPORTED', () => {
+        it('should NOT warn because MAX_LIMIT is now resolved via TypeChecker', () => {
+            // v0.8.6 automatically resolves module-level constants via scope analysis
+            expect(buildOutput).not.toContain('moduleConstantPre');
         });
     });
 
