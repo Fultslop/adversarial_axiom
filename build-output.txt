@@ -1,0 +1,54 @@
+[axiom] Contract validation warning in doMapFunction:
+  @pre amount — identifier 'amount' is not a known parameter in this contract expression
+[axiom] Contract validation warning in doProduceFn:
+  @post result === produce().length || result < 0 — 'result' used but no return type is declared; @post dropped
+[axiom] Contract validation warning in doProducePostFailFn:
+  @post result >= 0 — 'result' used but no return type is declared; @post dropped
+[axiom] Contract validation warning in doAnd:
+  @post result === true — 'result' used but no return type is declared; @post dropped
+[axiom] Contract validation warning in doLoopFn:
+  @post result > 0 — 'result' used but no return type is declared; @post dropped
+[axiom] Contract validation warning in doOptionalFn:
+  @pre obj?.value > 0 — property 'value' does not exist on type 'ValueCarrier | null'
+[axiom] Contract validation warning in shouldWarnAssignmentDuringBuild:
+  @pre v = 5 — assignment operator '=' is not allowed in contract expressions (did you mean '==='?)
+[axiom] Contract validation warning in shouldWarnVDoesNotExistsDuringBuild:
+  @pre v === 5 — identifier 'v' is not a known parameter in this contract expression
+[axiom] Contract validation warning in shouldWarnVNotCorrectType:
+  @pre v === "foo" — identifier 'v' is not a known parameter in this contract expression
+[axiom] Contract validation warning in shouldWarnResultNotCorrectType:
+  @post result === "foo" — type mismatch: 'result' is number but compared to string literal
+[axiom] Contract validation warning in shouldWarnResultTypeMissing:
+  @post result === x + 1 — 'result' used but no return type is declared; @post dropped
+[axiom] Contract merge warning in BoundedAccumulator:
+  both interface and class define @invariant tags — additive merge applied
+[axiom] Parameter name mismatch in RenamedParamsImpl.compute:
+  interface IRenamedParams: 'val' → 'inputVal' — expression renamed
+[axiom] Parameter name mismatch in IgnoredParamsImpl.calculate:
+  interface IIgnoredParams: 'val' → 'differentName' — expression renamed
+[axiom] Contract validation warning in nonPrimitivePost:
+  @post result === "ok" — type mismatch: 'result' is not a primitive type but compared to string literal
+[axiom] Contract validation warning in postVoidResult:
+  @post result === undefined — 'result' used but return type is 'void'; @post dropped
+[axiom] Contract validation warning in resultInPre:
+  @pre result === undefined — identifier 'result' is not a known parameter in this contract expression
+[axiom] Contract validation warning in noReturnTypeAnnotation:
+  @post result === 42 — 'result' used but no return type is declared; @post dropped
+[axiom] Contract validation warning in voidReturnPost:
+  @post result === undefined — 'result' used but return type is 'void'; @post dropped
+[axiom] Contract validation warning in neverReturnPost:
+  @post result === 0 — 'result' used but return type is 'never'; @post dropped
+[axiom] Contract validation warning in unionTypePre:
+  @pre amount === "zero" — type mismatch: 'amount' is number but compared to string literal
+[axiom] Contract validation warning in unaryOperandPre:
+  @pre -amount > 0 — type mismatch: 'amount' is string but compared to number literal
+[axiom] Contract validation warning in compoundNarrowingPre:
+  @pre amount !== undefined && amount === "zero" — type mismatch: 'amount' is number but compared to string literal
+[axiom] Contract validation warning in inOperatorPre:
+  @pre 'key' in obj — type mismatch: 'obj' is not a primitive type but compared to string literal
+[axiom] Contract validation warning in shortCircuitFalse:
+  @pre false && unknownId — identifier 'unknownId' is not a known parameter in this contract expression
+[axiom] Contract validation warning in invalidParamChain:
+  @pre config.missing.value > 0 — property 'missing' does not exist on type '{ value: number; }'
+[axiom] Contract validation warning in typeMismatchBacktickNumber:
+  @pre count === `hello` — type mismatch: 'count' is number but compared to string literal
