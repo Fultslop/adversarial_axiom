@@ -221,11 +221,9 @@ describe('Destructured Parameter Binding Support', () => {
     });
 
     describe('Arrow function with destructuring', () => {
-        // NOTE: Arrow functions with destructuring do NOT have contracts injected
-        // This is a known limitation of axiom v0.8.3
-        it('should NOT have contract injected (known limitation)', () => {
-            // This should NOT throw because no contract was injected
-            expect(() => arrowDestruct({ x: 0, y: 3 })).not.toThrow();
+        // Arrow functions with destructuring are NOW instrumented in v0.9.0
+        it('should throw ContractViolationError when x is 0 (now instrumented)', () => {
+            expect(() => arrowDestruct({ x: 0, y: 3 })).toThrow(ContractViolationError);
         });
     });
 

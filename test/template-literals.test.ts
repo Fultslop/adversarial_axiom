@@ -52,11 +52,8 @@ describe('Template Literal Support (v0.8.5)', () => {
     });
 
     describe('Interpolated template literals', () => {
-        // NOTE: Interpolated template literals (${var}) are NOT supported yet
-        // v0.8.5 only fixed no-substitution template literals
-        it('should NOT have contract injected (known limitation)', () => {
-            // No contract injected, so this won't throw
-            expect(() => interpolatedTemplateLiteralPre('item_5', 3)).not.toThrow();
+        it('should throw ContractViolationError when pre is violated (now supported)', () => {
+            expect(() => interpolatedTemplateLiteralPre('item_5', 3)).toThrow(ContractViolationError);
         });
     });
 
@@ -85,9 +82,8 @@ describe('Template Literal Support (v0.8.5)', () => {
     });
 
     describe('Template literal on left side', () => {
-        // NOTE: Interpolated templates on left side also not supported
-        it('should NOT have contract injected (known limitation)', () => {
-            expect(() => templateOnLeft(42, 'wrong')).not.toThrow();
+        it('should throw ContractViolationError when pre is violated (now supported)', () => {
+            expect(() => templateOnLeft(42, 'wrong')).toThrow(ContractViolationError);
         });
     });
 

@@ -125,10 +125,9 @@ describe('v0.8.6 Features: Enum & Module Constants', () => {
         });
     });
 
-    describe('Interpolated template literals (control - still not supported)', () => {
-        it('should NOT have contract injected (known limitation)', () => {
-            // This won't throw because interpolated templates aren't supported yet
-            expect(() => interpolatedTemplateControl('wrong_value', 5)).not.toThrow();
+    describe('Interpolated template literals (now supported)', () => {
+        it('should throw ContractViolationError when pre is violated (now supported)', () => {
+            expect(() => interpolatedTemplateControl('wrong_value', 5)).toThrow(ContractViolationError);
         });
     });
 });

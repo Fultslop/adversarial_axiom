@@ -7,14 +7,14 @@ import {
     BaseContract,
     DerivedContract,
 } from '@src/alternate-fn-form-fixtures';
+import { ContractViolationError } from '@fultslop/axiom';
 
-describe('Phase 3: Missing feature tests (not yet in scope)', () => {
+describe('Newly instrumented function forms (v0.9.0)', () => {
 
-    // 1.12: @pre on exported arrow function — NOT instrumented
+    // 1.12: @pre on exported arrow function — NOW instrumented
     describe('arrow function contracts (1.12)', () => {
-        it('should NOT throw on negative value (arrow functions not instrumented)', () => {
-            // Arrow functions are not yet supported. The transformer should skip them.
-            expect(arrowFnWithPre(-5)).toBe(-5); // should NOT throw
+        it('should throw ContractViolationError on negative value (now instrumented)', () => {
+            expect(() => arrowFnWithPre(-5)).toThrow(ContractViolationError);
         });
 
         it('should work normally with positive value', () => {
@@ -22,10 +22,10 @@ describe('Phase 3: Missing feature tests (not yet in scope)', () => {
         });
     });
 
-    // 1.13: @pre on exported function expression — NOT instrumented
+    // 1.13: @pre on exported function expression — NOW instrumented
     describe('function expression contracts (1.13)', () => {
-        it('should NOT throw on negative value (function expressions not instrumented)', () => {
-            expect(funcExprWithPre(-5)).toBe(-5); // should NOT throw
+        it('should throw ContractViolationError on negative value (now instrumented)', () => {
+            expect(() => funcExprWithPre(-5)).toThrow(ContractViolationError);
         });
 
         it('should work normally with positive value', () => {
