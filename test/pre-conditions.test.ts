@@ -4,10 +4,7 @@ import {
     doComparisonPre,
     doArithmeticPre,
     nonExportedWithPre,
-    ServiceClass,
-    unionTypePre,
-    unaryOperandPre,
-    compoundNarrowingPre,
+    ServiceClass
 } from '@src/pre-condition-fixtures';
 import { getBuildOutput } from './helpers/build-output';
 

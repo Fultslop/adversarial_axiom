@@ -15,7 +15,6 @@ import {
     BalanceAccount,
     PrivateInvariant,
     StaticInvariant,
-    nonPrimitivePost,
 } from '@src/post-condition-fixtures';
 import { getBuildOutput } from './helpers/build-output';
 

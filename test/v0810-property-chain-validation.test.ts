@@ -1,5 +1,4 @@
 // Comprehensive test for v0.8.10 property chain validation
-import { getBuildOutput } from './helpers/build-output';
 import {
     ValidPropertyChain,
     invalidParamChain,
