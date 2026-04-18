@@ -1,3 +1,4 @@
+import { getBuildOutput } from './helpers/build-output';
 import {
     postArithmetic,
     postVoidResult,
@@ -116,6 +117,12 @@ describe('Phase 2: Additional @post and control flow tests', () => {
 
     // 10.6: try/catch with @post
     describe('tryCatchPost (10.6)', () => {
+        it('emits an internal error for TryStatement (axiom alpha 16)', () => {
+            expect(getBuildOutput()).toContain(
+                '[axiom] Internal error in tryCatchPost: Unsupported statement node kind: TryStatement'
+            );
+        });
+
         it('should pass — catch block returns 0 which is >= 0', () => {
             expect(tryCatchPost()).toBe(0);
         });
@@ -151,12 +158,15 @@ describe('Phase 2: Additional @post and control flow tests', () => {
 
     // 10.10: Arrow function inside body
     describe('arrowInsideBody (10.10)', () => {
+        it('emits an internal error for ArrowFunction (axiom alpha 16)', () => {
+            expect(getBuildOutput()).toContain(
+                '[axiom] Internal error in arrowInsideBody: Unsupported expression node kind: ArrowFunction'
+            );
+        });
+
         it('should pass — arrow function inside should not affect outer contract', () => {
             expect(arrowInsideBody(5)).toBe(10);
         });
-
-        // Note: The transformer may or may not inject guards for this function
-        // depending on how it handles the source file. We test the happy path.
     });
 
     // 15.10: Re-entrant contract calls

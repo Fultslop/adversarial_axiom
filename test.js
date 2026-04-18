@@ -8,28 +8,12 @@ exports.validReturnPost = validReturnPost;
 exports.validStringReturnPost = validStringReturnPost;
 exports.validBooleanReturnPost = validBooleanReturnPost;
 const { ContractViolationError, InvariantViolationError, snapshot, deepSnapshot } = require("@fultslop/axiom");
-// axiom 1.1.2 — @post result type validation fixtures
-// Feature 1: @post result without return type annotation
-// Should NOT inject @post and should emit warning: "no return type is declared"
-/**
- * @post result === 42
- */
 function noReturnTypeAnnotation(x) {
     return x;
 }
-// Feature 2: @post result with void return type
-// Should drop @post and warn: return type is 'void'
-/**
- * @post result === undefined
- */
 function voidReturnPost(x) {
     console.log(x);
 }
-// Feature 3: @post result with never return type
-// Should drop @post and warn: return type is 'never'
-/**
- * @post result === 0
- */
 function neverReturnPost(x) {
     console.log(x); // Use x to avoid unused warning
     throw new Error('always throws');

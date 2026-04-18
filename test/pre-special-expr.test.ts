@@ -1,3 +1,4 @@
+import { getBuildOutput } from './helpers/build-output';
 import {
     ternaryPre,
     instanceofPre,
@@ -63,6 +64,12 @@ describe('Phase 2: Special expressions in @pre', () => {
 
     // 1.30: void operator
     describe('voidOperatorPre (1.30)', () => {
+        it('emits an internal error for VoidExpression (axiom alpha 16)', () => {
+            expect(getBuildOutput()).toContain(
+                '[axiom] Internal error in voidOperatorPre: Unsupported expression node kind: VoidExpression'
+            );
+        });
+
         it('should pass — void 0 === undefined is always true', () => {
             expect(voidOperatorPre(5)).toBe(5);
             expect(voidOperatorPre(-1)).toBe(-1);

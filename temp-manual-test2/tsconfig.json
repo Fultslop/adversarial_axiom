@@ -1,0 +1,17 @@
+﻿{
+    "include":  [
+                    "src/**/*.ts"
+                ],
+    "compilerOptions":  {
+                            "plugins":  [
+                                            {
+                                                "transform":  "c:\\Users\\lassc\\Code\\typescript\\fsprepost_acceptanceTests\\node_modules\\@fultslop\\axiom\\dist\\src\\transformer.js"
+                                            }
+                                        ],
+                            "rootDir":  ".",
+                            "strict":  true,
+                            "outDir":  "./dist",
+                            "module":  "commonjs",
+                            "target":  "ES2020"
+                        }
+}
