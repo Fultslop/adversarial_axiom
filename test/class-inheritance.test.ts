@@ -25,7 +25,7 @@ describe('Class Inheritance Contracts — Phase A: Happy Path', () => {
         fixture: string,
         testName: string,
         testCall?: string,
-    ): { output: string; compiled: string; exitCode: number; success: boolean } {
+    ): { output: string; compiled: string; exitCode: number; success: boolean; diagnostics: string } {
         const srcFile = path.join(srcDir, `${testName}.ts`);
         const outFile = path.join(outDir, `${testName}.js`);
 
@@ -54,19 +54,22 @@ describe('Class Inheritance Contracts — Phase A: Happy Path', () => {
             stdio: ['pipe', 'pipe', 'pipe'],
         });
 
+        const diagnostics = (tscResult.stderr || '') + (tscResult.stdout || '');
+
         if (tscResult.status !== 0) {
             return {
-                output: tscResult.stderr || tscResult.stdout || '',
+                output: diagnostics,
                 compiled: '',
                 exitCode: tscResult.status ?? 1,
                 success: false,
+                diagnostics,
             };
         }
 
         const compiled = fs.readFileSync(outFile, 'utf-8');
 
         if (testCall === undefined) {
-            return { output: '', compiled, exitCode: 0, success: true };
+            return { output: diagnostics, compiled, exitCode: 0, success: true, diagnostics };
         }
 
         const testRunner = path.join(outDir, `${testName}_runner.js`);
@@ -95,6 +98,7 @@ main().catch(e => { console.log('FATAL:', e.message); process.exit(1); });
             compiled,
             exitCode: runResult.status ?? 1,
             success: runResult.status === 0,
+            diagnostics,
         };
     }
 
@@ -297,5 +301,135 @@ export const ciA6_violation = () => new Dog().feed(-1);
         const runResult = compileAndRun(fixture, 'ciA6_violation', 'ciA6_violation()');
         expect(runResult.success).toBe(true);
         expect(runResult.output).toContain('ContractViolationError');
+    });
+
+    // ── Phase B: Boundary Tests ──────────────────────────────────────────────
+    describe('Phase B: Boundary Tests', () => {
+
+        const additiveMergeFixture = `
+class Animal {
+    /**
+     * @pre amount > 0
+     */
+    public feed(amount: number): void {
+        console.log('Animal.feed');
+    }
+}
+export class DogAdditive extends Animal {
+    /**
+     * @pre amount < 1000
+     */
+    public feed(amount: number): void {
+        console.log('DogAdditive.feed');
+    }
+}
+`;
+
+        it('CI-B1: additive merge — amount = -1 throws (violates Animal @pre)', () => {
+            const r = compileAndRun(additiveMergeFixture, 'DogAdditive', 'new DogAdditive().feed(-1)');
+            expect(r.success).toBe(true);
+            expect(r.output).toContain('ERROR: ContractViolationError');
+        });
+
+        it('CI-B2: additive merge — amount = 0 throws (exact lower boundary)', () => {
+            const r = compileAndRun(additiveMergeFixture, 'DogAdditive', 'new DogAdditive().feed(0)');
+            expect(r.success).toBe(true);
+            expect(r.output).toContain('ERROR: ContractViolationError');
+        });
+
+        it('CI-B3: additive merge — amount = 1 passes (minimum valid)', () => {
+            const r = compileAndRun(additiveMergeFixture, 'DogAdditive', 'new DogAdditive().feed(1)');
+            expect(r.success).toBe(true);
+            expect(r.output).not.toContain('ERROR:');
+        });
+
+        it('CI-B4: additive merge — amount = 2000 throws (violates Dog @pre)', () => {
+            const r = compileAndRun(additiveMergeFixture, 'DogAdditive', 'new DogAdditive().feed(2000)');
+            expect(r.success).toBe(true);
+            expect(r.output).toContain('ERROR: ContractViolationError');
+        });
+
+        it('CI-B5: additive merge — amount = 999 passes (maximum valid)', () => {
+            const r = compileAndRun(additiveMergeFixture, 'DogAdditive', 'new DogAdditive().feed(999)');
+            expect(r.success).toBe(true);
+            expect(r.output).not.toContain('ERROR:');
+        });
+
+        it('CI-B6: additive merge — compile-time warning emitted', () => {
+            const r = compileAndRun(additiveMergeFixture, 'DogAdditive');
+            expect(r.success).toBe(true);
+            expect(r.diagnostics.toLowerCase()).toMatch(/merge|multiple.*pre|pre.*multiple|axiom/i);
+        });
+
+        it('CI-B7: three-way merge — amount = 42 throws (violates Dog @pre !== 42)', () => {
+            const fixture = `
+interface IAnimal {
+    /**
+     * @pre amount > 0
+     */
+    feed(amount: number): void;
+}
+class Animal implements IAnimal {
+    /**
+     * @pre amount < 500
+     */
+    public feed(amount: number): void {}
+}
+export class DogThreeWay extends Animal implements IAnimal {
+    /**
+     * @pre amount !== 42
+     */
+    public feed(amount: number): void {}
+}
+`;
+            const r = compileAndRun(fixture, 'DogThreeWay', 'new DogThreeWay().feed(42)');
+            expect(r.success).toBe(true);
+            expect(r.output).toContain('ERROR: ContractViolationError');
+        });
+
+        it('CI-B8: three-way merge — amount = 501 throws (violates Animal @pre < 500)', () => {
+            const fixture = `
+interface IAnimal {
+    /**
+     * @pre amount > 0
+     */
+    feed(amount: number): void;
+}
+class Animal implements IAnimal {
+    /**
+     * @pre amount < 500
+     */
+    public feed(amount: number): void {}
+}
+export class DogThreeWay501 extends Animal implements IAnimal {
+    /**
+     * @pre amount !== 42
+     */
+    public feed(amount: number): void {}
+}
+`;
+            const r = compileAndRun(fixture, 'DogThreeWay501', 'new DogThreeWay501().feed(501)');
+            expect(r.success).toBe(true);
+            expect(r.output).toContain('ERROR: ContractViolationError');
+        });
+
+        it('CI-B9: parameter count mismatch — base contracts skipped, warning emitted', () => {
+            const fixture = `
+class Animal {
+    /**
+     * @pre a > 0
+     */
+    public feed(a: number, b: number): void {}
+}
+export class DogParamCount extends Animal {
+    public feed(a: number): void {}
+}
+`;
+            const r = compileAndRun(fixture, 'DogParamCount', 'new DogParamCount().feed(-1)');
+            expect(r.success).toBe(true);
+            expect(r.output).not.toContain('ERROR: ContractViolationError');
+            expect(r.diagnostics.toLowerCase()).toMatch(/skipped|param.*count|count.*param|axiom/i);
+        });
+
     });
 });
