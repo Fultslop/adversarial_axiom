@@ -455,15 +455,51 @@ export class DogRenameParam extends Animal {
             expect(r.diagnostics.toLowerCase()).toMatch(/rename|amount.*qty|qty.*amount|axiom/i);
         });
 
-        // CI-C2 is skipped: the `interfaceParamMismatch: 'ignore'` transformer option applies
-        // to implements-interface relationships (param rename detection), not to extends-class
-        // relationships. When DogRenameParam extends Animal (not implements), the ignore mode
-        // has no effect and Animal's guard is inherited normally. Reported as gap.
-        it.skip('CI-C2: param name mismatch ignore mode — contract skipped', () => {});
+        it('CI-C2: param name mismatch ignore mode — base class contracts skipped', () => {
+            // With interfaceParamMismatch: 'ignore', when param names differ between base and subclass
+            // (Animal.feed(amount) vs Dog.feed(qty)), the base class contract is skipped entirely.
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const transformerMod = require(path.join(
+                __dirname, '..', 'node_modules', '@fultslop', 'axiom', 'dist', 'src', 'transformer.js',
+            )) as { factory?: (program: unknown, opts: { diagnostics?: boolean }) => ts.TransformerFactory<ts.SourceFile>; default?: (program: unknown, opts: { diagnostics?: boolean }) => ts.TransformerFactory<ts.SourceFile> };
+            const transformerFactory = transformerMod.factory ?? transformerMod.default;
 
-        // CI-C5: Documented gap — constructor @pre IS being inherited by subclasses on the current
-        // implementation, which violates spec §12. Marked xit so the suite passes but the gap is tracked.
-        it('CI-C5: non-goal — constructor @pre NOT inherited by subclass [GAP]', () => {
+            const fixture = `
+class Animal {
+    /**
+     * @pre amount > 0
+     */
+    public feed(amount: number): void {}
+}
+export class DogIgnoreParam extends Animal {
+    public feed(qty: number): void {}
+}
+`;
+
+            let result: ts.TranspileOutput | undefined;
+            expect(() => {
+                result = ts.transpileModule(fixture, {
+                    compilerOptions: {
+                        target: ts.ScriptTarget.ES2020,
+                        module: ts.ModuleKind.CommonJS,
+                        strict: true,
+                    },
+                    transformers: {
+                        before: [transformerFactory(undefined, { diagnostics: true, interfaceParamMismatch: 'ignore' })],
+                    },
+                });
+            }).not.toThrow();
+
+            // With 'ignore' mode, Dog.feed(qty) should have no guard injected because
+            // the param name (qty) differs from the base class param name (amount).
+            // Extract DogIgnoreParam.feed method body — it should be empty (no guard).
+            const dogFeedMatch = result!.outputText.match(/class DogIgnoreParam[\s\S]*?feed\(qty\)[\s\S]*?\{[\s\S]*?\}/);
+            expect(dogFeedMatch).not.toBeNull();
+            const dogFeedBody = dogFeedMatch![0];
+            expect(dogFeedBody).not.toContain('ContractViolationError');
+        });
+
+        it('CI-C5: constructor @pre NOT injected into subclass — Dog has no constructor guard', () => {
             const fixture = `
 class Animal {
     public id: number;
@@ -482,8 +518,16 @@ export class DogConstructorNonGoal extends Animal {
 `;
             const r = compileAndRun(fixture, 'DogConstructorNonGoal', 'new DogConstructorNonGoal(-1)');
             expect(r.success).toBe(true);
-            // GAP: constructor @pre IS inherited (current impl); should NOT be inherited (spec §12)
+            // The error comes from Animal's own guarded constructor executing via super(),
+            // not from any guard injected into Dog's constructor.
             expect(r.output).toContain('ERROR: ContractViolationError');
+            // Dog's compiled constructor should be a plain super() call with no guard injected.
+            // Extract DogConstructorNonGoal's constructor body — it should be just "super(id);"
+            const dogCtorMatch = r.compiled.match(/class DogConstructorNonGoal[\s\S]*?constructor\(id\)[\s\S]*?\{[\s\S]*?\}/);
+            expect(dogCtorMatch).not.toBeNull();
+            const dogCtorBody = dogCtorMatch![0];
+            expect(dogCtorBody).not.toContain('ContractViolationError');
+            expect(dogCtorBody).toContain('super(id)');
         });
 
         it('CI-C6: non-goal — grandparent contracts NOT applied to grandchild', () => {
