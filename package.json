@@ -10,6 +10,7 @@
   "scripts": {
     "build": "tsc",
     "build:dev": "tspc -p tsconfig.dev.json",
+    "build:esm": "tspc -p tsconfig.esm.dev.json",
     "build:watch": "tsc --watch",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -53,7 +54,7 @@
     "typescript": "^6.0.2"
   },
   "dependencies": {
-    "@fultslop/axiom": "^0.9.0-alpha.17",
+    "@fultslop/axiom": "^0.9.0-alpha.21",
     "js-yaml": "^4.1.1"
   }
 }

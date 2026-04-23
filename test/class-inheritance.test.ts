@@ -4,6 +4,7 @@ import { spawnSync } from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs';
 import ts from 'typescript';
+import { DOG_IGNORE_PARAM, TRANSPILE_DOG_MODULE } from './fixtures';
 
 describe('Class Inheritance Contracts — Phase A: Happy Path', () => {
     const testDir = path.join(__dirname, '..', 'temp-class-inheritance');
@@ -459,24 +460,24 @@ export class DogRenameParam extends Animal {
             // With interfaceParamMismatch: 'ignore', when param names differ between base and subclass
             // (Animal.feed(amount) vs Dog.feed(qty)), the base class contract is skipped entirely.
             // eslint-disable-next-line @typescript-eslint/no-var-requires
-            const transformerMod = require(path.join(
+            const importPath = path.join(
                 __dirname, '..', 'node_modules', '@fultslop', 'axiom', 'dist', 'src', 'transformer.js',
-            )) as { factory?: (program: unknown, opts: { diagnostics?: boolean }) => ts.TransformerFactory<ts.SourceFile>; default?: (program: unknown, opts: { diagnostics?: boolean }) => ts.TransformerFactory<ts.SourceFile> };
+            );
+
+            const transformerMod = require( importPath) as { 
+                factory?: (program: unknown, opts: { diagnostics?: boolean }) => ts.TransformerFactory<ts.SourceFile>; default?: (program: unknown, opts: { diagnostics?: boolean }) 
+                    => ts.TransformerFactory<ts.SourceFile> 
+            };
+            
             const transformerFactory = transformerMod.factory ?? transformerMod.default;
-
-            const fixture = `
-class Animal {
-    /**
-     * @pre amount > 0
-     */
-    public feed(amount: number): void {}
-}
-export class DogIgnoreParam extends Animal {
-    public feed(qty: number): void {}
-}
-`;
-
+            expect(transformerFactory !== undefined);
+            
+            const fixture = DOG_IGNORE_PARAM;
+            
             let result: ts.TranspileOutput | undefined;
+
+            const factory = transformerFactory!(undefined, { diagnostics: true });
+            
             expect(() => {
                 result = ts.transpileModule(fixture, {
                     compilerOptions: {
@@ -485,7 +486,7 @@ export class DogIgnoreParam extends Animal {
                         strict: true,
                     },
                     transformers: {
-                        before: [transformerFactory(undefined, { diagnostics: true, interfaceParamMismatch: 'ignore' })],
+                        before: [factory],
                     },
                 });
             }).not.toThrow();
@@ -576,7 +577,6 @@ export class CrossFileDog extends CrossFileAnimal {
 `;
             const animalFile = path.join(srcDir, 'CrossFileAnimal.ts');
             const dogFile = path.join(srcDir, 'CrossFileDog.ts');
-            const dogOutFile = path.join(outDir, 'CrossFileDog.js');
 
             fs.writeFileSync(animalFile, animalFixture);
             fs.writeFileSync(dogFile, dogFixture);
@@ -645,21 +645,11 @@ main().catch(e => { console.log('FATAL:', e.message); process.exit(1); });
             )) as { factory?: (program: unknown, opts: { diagnostics?: boolean }) => ts.TransformerFactory<ts.SourceFile>; default?: (program: unknown, opts: { diagnostics?: boolean }) => ts.TransformerFactory<ts.SourceFile> };
 
             const transformerFactory = transformerMod.factory ?? transformerMod.default;
+            
+            expect(transformerFactory).toBeDefined();
 
-            const fixture = `
-class Animal {
-    /**
-     * @pre amount > 0
-     */
-    public feed(amount: number): void {}
-}
-export class TranspileModuleDog extends Animal {
-    /**
-     * @pre amount > 0
-     */
-    public feed(amount: number): void {}
-}
-`;
+            const fixture = TRANSPILE_DOG_MODULE;
+
             let result: ts.TranspileOutput | undefined;
             expect(() => {
                 result = ts.transpileModule(fixture, {
@@ -669,7 +659,7 @@ export class TranspileModuleDog extends Animal {
                         strict: true,
                     },
                     transformers: {
-                        before: [transformerFactory(undefined, { diagnostics: true })],
+                        before: [transformerFactory!(undefined, { diagnostics: true })],
                     },
                 });
             }).not.toThrow();
